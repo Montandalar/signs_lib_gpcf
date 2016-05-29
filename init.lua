@@ -958,6 +958,28 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft({
+      output = "signs:sign_wall_blue_ahead",
+      recipe = {
+	 {"group:stick"},
+	 {"signs:sign_wall_blue"},
+      },
+})
+
+minetest.register_craft({
+      output = "signs:sign_wall_blue_left",
+      recipe = {
+	 {"group:stick", "signs:sign_wall_blue" },
+      },
+})
+
+minetest.register_craft({
+      output = "signs:sign_wall_blue_right",
+      recipe = {
+	 {"signs:sign_wall_blue", "group:stick" },
+      },
+})
+
 --Alternate recipe.
 
 minetest.register_craft({
