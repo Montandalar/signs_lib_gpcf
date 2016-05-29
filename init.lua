@@ -795,7 +795,9 @@ minetest.register_node(":locked_sign:sign_wall_locked", {
 
 -- metal, colored signs
 
-local sign_colors = { "green", "yellow", "red", "white_red", "white_black", "orange", "blue", "brown" }
+local sign_colors = { "green", "yellow", "red", "white_red",
+"white_black", "orange", "blue", "brown" , "blue_ahead", "blue_left",
+"blue_right", "blue_bidi"}
 
 for _, color in ipairs(sign_colors) do
 	minetest.register_node(":signs:sign_wall_"..color, {
