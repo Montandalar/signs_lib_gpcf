@@ -61,6 +61,19 @@ signs_lib.metal_wall_sign_model = {
 	}
 }
 
+signs_lib.subway_wall_sign_model = {
+	nodebox = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, 0.4375, 0.5, 0.5, 0.5}
+	},
+	textpos = {
+		{delta = {x =  0,     y = 0.07, z =  0.43  }, yaw = 0},
+		{delta = {x =  0.43,  y = 0.07, z =  0     }, yaw = math.pi / -2},
+		{delta = {x =  0,     y = 0.07, z = -0.43  }, yaw = math.pi},
+		{delta = {x = -0.43,  y = 0.07, z =  0     }, yaw = math.pi / 2},
+	}
+}
+
 signs_lib.yard_sign_model = {
 	nodebox = {
 		type = "fixed",
@@ -511,7 +524,7 @@ signs_lib.update_sign = function(pos, fields, owner)
 		sign_info = signs_lib.yard_sign_model.textpos[minetest.get_node(pos).param2 + 1]
 	elseif signnode.name == "signs:sign_hanging" then
 		sign_info = signs_lib.hanging_sign_model.textpos[minetest.get_node(pos).param2 + 1]
-	elseif string.find(signnode.name, "sign_wall") then
+	elseif string.find(signnode.name, "sign_wall") or string.find(signnode.name, "sign_subway") then
 		if signnode.name == default_sign
 		  or signnode.name == "locked_sign:sign_wall_locked" then
 			sign_info = signs_lib.regular_wall_sign_model.textpos[minetest.get_node(pos).param2 + 1]
@@ -817,6 +830,44 @@ for _, color in ipairs(sign_colors) do
 			"signs_metal_sides.png",
 			"signs_metal_back.png",
 			"signs_"..color.."_front.png"
+		},
+		groups = sign_groups,
+		on_place = function(itemstack, placer, pointed_thing)
+			return signs_lib.determine_sign_type(itemstack, placer, pointed_thing)
+		end,
+		on_construct = function(pos)
+			signs_lib.construct_sign(pos)
+		end,
+		on_destruct = function(pos)
+			signs_lib.destruct_sign(pos)
+		end,
+		on_receive_fields = function(pos, formname, fields, sender)
+			signs_lib.receive_fields(pos, formname, fields, sender)
+		end,
+		on_punch = function(pos, node, puncher)
+			signs_lib.update_sign(pos)
+		end,
+	})
+end
+local line_cols = {"red","cyan","blue","green","violet","orange","yellow","gray"}
+for _, color in ipairs(line_cols) do
+	minetest.register_node(":signs:sign_subway_"..color, {
+		description = S("Sign ("..color..", Subway)"),
+		inventory_image = "signs_subway_"..color.."_front.png",
+		wield_image = "signs_subway_"..color.."_front.png",
+		node_placement_prediction = "",
+		paramtype = "light",
+		sunlight_propagates = true,
+		paramtype2 = "facedir",
+		drawtype = "nodebox",
+		node_box = signs_lib.subway_wall_sign_model.nodebox,
+		tiles = {
+			"signs_metal_tb.png",
+			"signs_metal_tb.png",
+			"signs_metal_sides.png",
+			"signs_metal_sides.png",
+			"signs_metal_back.png",
+			"signs_subway_"..color.."_front.png"
 		},
 		groups = sign_groups,
 		on_place = function(itemstack, placer, pointed_thing)
