@@ -15,6 +15,8 @@ local enable_colored_metal_signs = true
 -- CWz's keyword interact mod uses this setting.
 local current_keyword = minetest.settings:get("interact_keyword") or "iaccept"
 
+local replace_macros = dofile(minetest.get_modpath(minetest.get_current_modname())..DIR_DELIM.."macro.lua")
+
 signs_lib = {}
 screwdriver = screwdriver or {}
 
@@ -290,6 +292,7 @@ end
 local function split_lines_and_words(text)
 	if not text then return end
 	text = string.gsub(text, "@KEYWORD", current_keyword)
+	text = replace_macros(text)
 	local lines = { }
 	for _, line in ipairs(text:split("\n")) do
 		table.insert(lines, line:split(" "))
